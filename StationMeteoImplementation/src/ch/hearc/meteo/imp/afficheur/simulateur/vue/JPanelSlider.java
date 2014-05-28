@@ -51,6 +51,8 @@ public class JPanelSlider extends JPanel
 		int min = 1000;
 		int max = 10000;
 		int value;
+		
+		//TODO try catch erreur si pas entre min et max
 		try
 			{
 			value = (int)afficheurServiceMOO.getMeteoServiceOptions().getTemperatureDT();

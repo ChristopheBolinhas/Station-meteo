@@ -1,4 +1,3 @@
-
 package ch.hearc.meteo.imp.afficheur.simulateur.vue.atome;
 
 import java.awt.Color;
@@ -12,40 +11,41 @@ import javax.swing.JPanel;
 
 import ch.hearc.meteo.imp.afficheur.simulateur.moo.Stat;
 
-public class JPanelStat extends JPanel
-	{
+public class JPanelStat extends JPanel {
 
 	/*------------------------------------------------------------------*\
 	|*							Constructeurs							*|
 	\*------------------------------------------------------------------*/
 
-	public JPanelStat(Stat stat)
-		{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public JPanelStat(Stat stat, String name) {
 		this.stat = stat;
+		this.name = name;
 
 		geometry();
 		control();
 		apparence();
-		}
+	}
 
 	/*------------------------------------------------------------------*\
 	|*							Methodes Public							*|
 	\*------------------------------------------------------------------*/
 
-	public void update()
-		{
+	public void update() {
 		labelCurrent.setText("" + MathTools.arrondir(stat.getLast()));
 		labelMin.setText("min " + MathTools.arrondir(stat.getMin()));
 		labelMax.setText("max " + MathTools.arrondir(stat.getMax()));
 		labelMoy.setText("moy " + MathTools.arrondir(stat.getMoy()));
-		}
+	}
 
 	/*------------------------------------------------------------------*\
 	|*							Methodes Private						*|
 	\*------------------------------------------------------------------*/
 
-	private void geometry()
-		{
+	private void geometry() {
 		labelCurrent = new JLabel("-----");
 
 		boxV();
@@ -55,10 +55,9 @@ public class JPanelStat extends JPanel
 		setLayout(layout);
 		add(labelCurrent);
 		add(boxV);
-		}
+	}
 
-	private void boxV()
-		{
+	private void boxV() {
 		labelMin = new JLabel("min ------");
 		labelMax = new JLabel("max ------");
 		labelMoy = new JLabel("moy ------");
@@ -69,20 +68,18 @@ public class JPanelStat extends JPanel
 		boxV.add(labelMax);
 		boxV.add(Box.createVerticalGlue());
 		boxV.add(labelMoy);
-		}
+	}
 
-	private void apparence()
-		{
-		labelCurrent.setFont(new Font("courier", Font.BOLD, 25));
+	private void apparence() {
+		labelCurrent.setFont(new Font("Helvetica", Font.PLAIN, 20));
 		labelCurrent.setForeground(Color.RED);
 
-		setBorder(BorderFactory.createTitledBorder("Statistique"));
-		}
+		setBorder(BorderFactory.createTitledBorder(this.name));
+	}
 
-	private void control()
-		{
+	private void control() {
 		// rien
-		}
+	}
 
 	/*------------------------------------------------------------------*\
 	|*							Attributs Private						*|
@@ -98,5 +95,6 @@ public class JPanelStat extends JPanel
 	private JLabel labelMoy;
 
 	private Box boxV;
+	private String name;
 
-	}
+}

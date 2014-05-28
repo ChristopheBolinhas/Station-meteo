@@ -1,90 +1,97 @@
-
 package ch.hearc.meteo.imp.afficheur.simulateur.vue;
 
-import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
-import javax.swing.Box;
 import javax.swing.JPanel;
 
 import ch.hearc.meteo.imp.afficheur.simulateur.moo.AfficheurServiceMOO;
 import ch.hearc.meteo.spec.com.meteo.MeteoServiceOptions;
 
-public class JPanelRoot extends JPanel
-	{
-
+public class JPanelRoot extends JPanel {
 
 	/*------------------------------------------------------------------*\
 	|*							Constructeurs							*|
 	\*------------------------------------------------------------------*/
 
-	public JPanelRoot(AfficheurServiceMOO afficheurServiceMOO)
-		{
-		this.panelControl = new JPanelControl(afficheurServiceMOO);
-		this.panelData = new JPanelData(afficheurServiceMOO);
-		this.panelSlider=new JPanelSlider(afficheurServiceMOO);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public JPanelRoot(AfficheurServiceMOO afficheurServiceMOO) {
+
+		// Contient la liste des stations météo
+		this.jpanellist = new JPanelList(afficheurServiceMOO);
+
+		// Les charts
+		this.jpaneldataview = new JPanelDataView(afficheurServiceMOO);
 
 		geometry();
 		control();
 		apparence();
-		}
+	}
 
 	/*------------------------------------------------------------------*\
 	|*							Methodes Public							*|
 	\*------------------------------------------------------------------*/
 
-	public void update()
-		{
-		panelData.update();
-		}
+	public void update() {
+		jpaneldataview.update();
+		jpanellist.update();
+	}
 
-
-	public void updateMeteoServiceOptions(MeteoServiceOptions meteoServiceOptions)
-		{
-		panelSlider.updateMeteoServiceOptions( meteoServiceOptions);
-		}
+	public void updateMeteoServiceOptions(
+			MeteoServiceOptions meteoServiceOptions) {
+		jpaneldataview.updateMeteoServiceOptions(meteoServiceOptions);
+	}
 
 	/*------------------------------------------------------------------*\
 	|*							Methodes Private						*|
 	\*------------------------------------------------------------------*/
 
-	private void geometry()
-		{
-		Box boxV = Box.createVerticalBox();
-		//boxV.add(Box.createVerticalStrut(15));
-		boxV.add(panelData);
-		//boxV.add(Box.createVerticalStrut(15));
-		boxV.add(panelSlider);
-		boxV.add(panelControl);
-		boxV.add(Box.createVerticalStrut(15));
+	private void geometry() {
 
-		Box boxH = Box.createHorizontalBox();
-		boxH.add(Box.createHorizontalStrut(15));
-		boxH.add(boxV);
-		boxH.add(Box.createHorizontalStrut(15));
+		// Creation du layout
+		GridBagLayout gridLayout = new GridBagLayout();
+		contraintes = new GridBagConstraints();
 
+		setLayout(gridLayout);
 
-		setLayout(new BorderLayout());
-		add(boxH, BorderLayout.CENTER);
-		}
+		contraintes.fill = GridBagConstraints.BOTH;
+		contraintes.gridwidth = 1;
+		contraintes.gridheight = 1;
+		contraintes.weighty = 1;
+		contraintes.weightx = 1; // largeur du panel
+		contraintes.gridx = 0;
+		contraintes.gridy = 0;
+		add(jpanellist, contraintes); // Panel contenant la Liste gauche
 
-	private void apparence()
-		{
+		contraintes.gridwidth = 5;
+		contraintes.gridheight = 1;
+		contraintes.weighty = 1;
+		contraintes.weightx = 3; // largeur du panel
+		contraintes.gridx = 1;
+		contraintes.gridy = 0;
+		add(jpaneldataview, contraintes); // Panel contenant les charts
+	}
+
+	private void apparence() {
 		// rien
-		//setBackground(Color.ORANGE);
-		}
+	}
 
-	private void control()
-		{
+	private void control() {
 		// rien
-		}
+	}
 
 	/*------------------------------------------------------------------*\
 	|*							Attributs Private						*|
 	\*------------------------------------------------------------------*/
 
 	// Tools
-	private JPanelControl panelControl;
-	private JPanelData panelData;
-	private JPanelSlider panelSlider;
+	private GridBagConstraints contraintes;
 
-	}
+	// Tools
+	private JPanelList jpanellist;
+	private JPanelDataView jpaneldataview;
+}

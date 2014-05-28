@@ -22,6 +22,11 @@ public class JPanelControl extends JPanel
 	|*							Constructeurs							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public JPanelControl(AfficheurServiceMOO afficheurServiceMOO)
 		{
 		this.afficheurServiceMOO = afficheurServiceMOO;
