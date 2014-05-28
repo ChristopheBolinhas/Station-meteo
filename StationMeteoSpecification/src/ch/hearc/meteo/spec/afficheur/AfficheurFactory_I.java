@@ -1,6 +1,8 @@
 
 package ch.hearc.meteo.spec.afficheur;
 
+import java.rmi.Remote;
+
 import ch.hearc.meteo.spec.reseau.rmiwrapper.MeteoServiceWrapper_I;
 
 public interface AfficheurFactory_I

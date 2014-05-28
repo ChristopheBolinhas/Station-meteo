@@ -1,6 +1,8 @@
 
 package ch.hearc.meteo.imp.use.remote.pccentral;
 
+import ch.hearc.meteo.spec.afficheur.AffichageOptions;
+
 
 
 
@@ -18,12 +20,14 @@ public class UsePCCentral
 
 	public static void main()
 		{
-		new PCCentral().run();
+		pc = new PCCentral(new AffichageOptions(5, "test"));
+		pc.run();
+		
 		}
 
 	/*------------------------------------------------------------------*\
 	|*							Methodes Private						*|
 	\*------------------------------------------------------------------*/
-
+	private static PCCentral pc;
 	}
 

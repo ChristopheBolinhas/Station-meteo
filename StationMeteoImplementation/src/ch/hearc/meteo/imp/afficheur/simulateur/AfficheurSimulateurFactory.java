@@ -35,6 +35,8 @@ public class AfficheurSimulateurFactory implements AfficheurFactory_I
 		return new AfficheurServiceSimulateur(affichageOptions, meteoServiceRemote);
 		}
 
+
+
 	/*------------------------------------------------------------------*\
 	|*							Methodes Private						*|
 	\*------------------------------------------------------------------*/

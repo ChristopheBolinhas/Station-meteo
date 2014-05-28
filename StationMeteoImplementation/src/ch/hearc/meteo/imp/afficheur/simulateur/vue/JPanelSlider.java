@@ -62,6 +62,7 @@ public class JPanelSlider extends JPanel
 			value = (min + max) / 2;
 			e.printStackTrace();
 			}
+		
 		jslider = new JSlider(min, max, value);
 
 		border = BorderFactory.createTitledBorder("");
