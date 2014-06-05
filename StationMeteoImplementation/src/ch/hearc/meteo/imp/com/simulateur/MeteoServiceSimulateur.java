@@ -64,5 +64,16 @@ public class MeteoServiceSimulateur extends MeteoService_A
 	private FonctionAltitude fonctionAltitude;
 	private FonctionPression fonctionPression;
 	private FonctionTemperature fonctionTemperature;
+	@Override
+	protected void startHardware() throws MeteoServiceException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void stopHardware() throws MeteoServiceException {
+		// TODO Auto-generated method stub
+		
+	}
 
 	}

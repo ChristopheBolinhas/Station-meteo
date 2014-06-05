@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.hearc.meteo.imp.afficheur.simulateur.AfficheurSimulateurFactory;
+import ch.hearc.meteo.imp.com.real.MeteoServiceFactory;
+import ch.hearc.meteo.imp.com.real.port.MeteoPortDetectionService;
 import ch.hearc.meteo.imp.com.simulateur.MeteoServiceSimulatorFactory;
 import ch.hearc.meteo.imp.use.remote.PC_I;
 import ch.hearc.meteo.spec.afficheur.AffichageOptions;
@@ -56,7 +58,7 @@ public class PCLocal implements PC_I {
 		}
 
 		try {
-			client(); // aprüs
+			client(); // aprï¿½s
 		} catch (RemoteException e) {
 			System.err.println("[PCLocal :  run : client : failed");
 			e.printStackTrace();
@@ -80,8 +82,6 @@ public class PCLocal implements PC_I {
 	private void server() throws MeteoServiceException, RemoteException, NotBoundException {
 		// Connexion au serveur
 		afficheurManager = (RemoteAfficheurCreator_I)RmiTools.connectionRemoteObjectBloquant(rmiURLafficheurManager);
-		System.out.println("Connected");
-		//System.out.println("aaaa " +afficheurFactory.createOnCentralPC(affichageOptions, meteoServiceRemote));
 		
 		
 	}
@@ -92,9 +92,10 @@ public class PCLocal implements PC_I {
 
 	private void client() throws RemoteException, MeteoServiceException, NotBoundException 
 	{
-		meteoServiceFactory = new MeteoServiceSimulatorFactory();
-		
-		addMeteoService("COM1");
+		meteoServiceFactory = new MeteoServiceFactory();
+		MeteoPortDetectionService service = new MeteoPortDetectionService();
+		System.out.println(service.findListPortSerie());
+		// addMeteoService("COM3");
 		
 	}
 
@@ -177,6 +178,6 @@ public class PCLocal implements PC_I {
 	// Tools
 	private RemoteAfficheurCreator_I afficheurManager;
 	private AfficheurFactory_I afficheurFactory;
-	private MeteoServiceSimulatorFactory meteoServiceFactory;
+	private MeteoServiceFactory meteoServiceFactory;
 	private List<MeteoService_I> meteoServices;
 }

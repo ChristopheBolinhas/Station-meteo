@@ -1,12 +1,20 @@
 
 package ch.hearc.meteo.imp.com.real.com;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Scanner;
+import java.util.TooManyListenersException;
 
+import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
-
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
 import ch.hearc.meteo.imp.com.logique.MeteoServiceCallback_I;
+import ch.hearc.meteo.imp.com.real.com.trame.TrameDecoder;
+import ch.hearc.meteo.imp.com.real.com.trame.TrameEncoder;
+import ch.hearc.meteo.spec.com.meteo.exception.MeteoServiceException;
 
 // TODO student
 //  Implémenter cette classe
@@ -75,46 +83,71 @@ public class ComConnexion implements ComConnexions_I
 	|*							Methodes Public							*|
 	\*------------------------------------------------------------------*/
 
-	@Override public void start() throws Exception
+	public void start() throws MeteoServiceException, IOException
 		{
-		// TODO Auto-generated method stub
+		
+		try {
+			serialPort.addEventListener(new SerialPortEventListener() {
+				
+				@Override
+				public void serialEvent(SerialPortEvent e) {
+					switch(e.getEventType())
+					{
+					case SerialPortEvent.DATA_AVAILABLE:
+						try {
+							traiterDonneeRecu();
+						} catch (MeteoServiceException | IOException e1) {
+						 new MeteoServiceException("[MeteoService] : traiterDonneeRecu failure", e1).printStackTrace();
+						}
+						break;
+					}
+				}
+			});
+		} catch (TooManyListenersException e) {
+			throw new MeteoServiceException("[MeteoService] : addEventListener failure", e);
+		}
 
+		serialPort.notifyOnDataAvailable(true);
 		}
 
 	@Override public void stop() throws Exception
 		{
-		// TODO Auto-generated method stub
-
+		serialPort.removeEventListener();
 		}
 
 	@Override public void connect() throws Exception
 		{
-		// TODO Auto-generated method stub
+		CommPortIdentifier portId = CommPortIdentifier.getPortIdentifier(portName);
+		serialPort = (SerialPort)portId.open(portName, 10000);
+		serialPort.setSerialPortParams(comOption.getSpeed(),comOption.getDataBit(),comOption.getStopBit(),comOption.getParity());
+		serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+		
+		//Initialise le reader et writer
+		reader = serialPort.getInputStream();
+		writer = serialPort.getOutputStream();
 
 		}
 
 	@Override public void disconnect() throws Exception
 		{
-		// TODO Auto-generated method stub
-
+		reader.close();
+		writer.close();
+		serialPort.close();
 		}
 
 	@Override public void askAltitudeAsync() throws Exception
 		{
-		// TODO Auto-generated method stub
-
+		writer.write(TrameEncoder.coder("010200"));
 		}
 
 	@Override public void askPressionAsync() throws Exception
 		{
-		// TODO Auto-generated method stub
-
+		writer.write(TrameEncoder.coder("010000"));
 		}
 
 	@Override public void askTemperatureAsync() throws Exception
 		{
-		// TODO Auto-generated method stub
-
+		writer.write(TrameEncoder.coder("010100"));
 		}
 
 	/*------------------------------*\
@@ -141,6 +174,28 @@ public class ComConnexion implements ComConnexions_I
 	/*------------------------------------------------------------------*\
 	|*							Methodes Private						*|
 	\*------------------------------------------------------------------*/
+	
+	private void traiterDonneeRecu() throws MeteoServiceException, IOException
+	{
+		@SuppressWarnings("resource")
+		Scanner s = new Scanner(reader).useDelimiter("\\A");
+	    String trame = s.hasNext() ? s.next() : "";
+		
+		float value = TrameDecoder.valeur(trame);
+		
+		switch(TrameDecoder.dataType(trame))
+		{
+		case ALTITUDE:
+			meteoServiceCallback.altitudePerformed(value);
+			break;
+		case PRESSION:
+			meteoServiceCallback.pressionPerformed(value);
+			break;
+		case TEMPERATURE:
+			meteoServiceCallback.temperaturePerformed(value);
+			break;
+		}
+	}
 
 	/*------------------------------------------------------------------*\
 	|*							Attributs Private						*|
@@ -150,10 +205,10 @@ public class ComConnexion implements ComConnexions_I
 	private ComOption comOption;
 	private String portName;
 	private MeteoServiceCallback_I meteoServiceCallback;
-
+	
 	// Tools
 	private SerialPort serialPort;
-	private BufferedWriter writer;
-	private BufferedReader reader;
+	private OutputStream writer;
+	private InputStream reader;
 
 	}

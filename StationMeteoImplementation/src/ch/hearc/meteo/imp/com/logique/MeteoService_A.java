@@ -44,6 +44,10 @@ public abstract class MeteoService_A implements MeteoService_I ,MeteoServiceCall
 	protected abstract void connectHardware() throws MeteoServiceException;
 
 	protected abstract void disconnectHardware() throws MeteoServiceException;
+	
+	protected abstract void startHardware() throws MeteoServiceException;
+	
+	protected abstract void stopHardware() throws MeteoServiceException;
 
 	/*------------------------------------------------------------------*\
 	|*							Methodes Public							*|
@@ -127,7 +131,7 @@ public abstract class MeteoService_A implements MeteoService_I ,MeteoServiceCall
 				}
 
 			// V2
-			//thread.stop(); // vu la nature du thread, pas genant comme méthode
+			//thread.stop(); // vu la nature du thread, pas genant comme mï¿½thode
 
 			//v3 ou pool thread avec 1 thread
 			}

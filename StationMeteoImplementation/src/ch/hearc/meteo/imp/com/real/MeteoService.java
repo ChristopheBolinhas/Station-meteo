@@ -3,6 +3,8 @@ package ch.hearc.meteo.imp.com.real;
 
 import ch.hearc.meteo.imp.com.logique.MeteoService_A;
 import ch.hearc.meteo.imp.com.real.com.ComConnexions_I;
+import ch.hearc.meteo.spec.com.meteo.MeteoServiceOptions;
+import ch.hearc.meteo.spec.com.meteo.MeteoService_I;
 import ch.hearc.meteo.spec.com.meteo.exception.MeteoServiceException;
 
 /**
@@ -59,7 +61,7 @@ public class MeteoService extends MeteoService_A
 	/*------------------------------------------------------------------*\
 	|*							Methodes Public							*|
 	\*------------------------------------------------------------------*/
-
+	
 	/**
 	 * assynchrone, when data "value" received , must call altitudePerformed(value) of MeteoServiceCallback_I
 	 */
@@ -115,7 +117,6 @@ public class MeteoService extends MeteoService_A
 			{
 			throw new MeteoServiceException("[MeteoService] : connect failure", e);
 			}
-
 		}
 
 	@Override protected void disconnectHardware() throws MeteoServiceException
@@ -130,6 +131,30 @@ public class MeteoService extends MeteoService_A
 			}
 
 		}
+	
+	@Override protected void startHardware() throws MeteoServiceException
+	{
+	try
+		{
+		comConnexion.start();
+		}
+	catch (Exception e)
+		{
+		throw new MeteoServiceException("[MeteoService] : start failure", e);
+		}
+	}
+	
+	@Override protected void stopHardware() throws MeteoServiceException
+	{
+	try
+		{
+		comConnexion.stop();
+		}
+	catch (Exception e)
+		{
+		throw new MeteoServiceException("[MeteoService] : stop failure", e);
+		}
+	}
 
 	/*------------------------------------------------------------------*\
 	|*							Methodes Private						*|
@@ -141,7 +166,5 @@ public class MeteoService extends MeteoService_A
 
 	// Tools
 	private ComConnexions_I comConnexion;
-
-
 
 	}
