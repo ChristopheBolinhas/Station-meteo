@@ -90,10 +90,16 @@ public abstract class MeteoService_A implements MeteoService_I ,MeteoServiceCall
 
 				this.meteoServiceOptions = meteoServiceOptions;
 				isRunning = true;
-
+			
 				questionneur = new Questionneur(this);
 				threadQuestionnaire = new Thread(questionneur);
 				threadQuestionnaire.start();
+				try {
+					startHardware();
+				} catch (MeteoServiceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				}
 			else
 				{
@@ -114,7 +120,12 @@ public abstract class MeteoService_A implements MeteoService_I ,MeteoServiceCall
 			{
 			isRunning = false;
 			questionneur.stopAsync(); // pas suffisant
-
+			try {
+				stopHardware();
+			} catch (MeteoServiceException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			//v1
 			while(threadQuestionnaire.isAlive())
 				{
