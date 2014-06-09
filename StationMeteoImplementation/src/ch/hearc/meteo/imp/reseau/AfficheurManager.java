@@ -48,21 +48,11 @@ public class AfficheurManager implements RemoteAfficheurCreator_I
 	@Override public RmiURL createRemoteAfficheurService(AffichageOptions affichageOptions, RmiURL meteoServiceRmiURL) throws RemoteException
 		{
 		
-			System.out.println("REMOTE AFFICHAGE CREE");
 			MeteoServiceWrapper_I meteoServiceRemote = null;
 			
 			// client
 			{
-			// TODO connecion to meteoService on PC-Local with meteoServiceRmiURL
-				//On connecte le wrapper au service meteo
-				System.out.println("Connexion au service meteo effectue");
 				meteoServiceRemote = (MeteoServiceWrapper_I)RmiTools.connectionRemoteObjectBloquant(meteoServiceRmiURL);
-				/*try {
-					meteoServiceRemote.connect();
-				} catch (MeteoServiceException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}*/
 			}
 
 			// server
@@ -71,11 +61,8 @@ public class AfficheurManager implements RemoteAfficheurCreator_I
 			
 			AfficheurServiceWrapper afficheurServiceWrapper = new AfficheurServiceWrapper(afficheurService);
 			RmiURL afficheurServicermiURL = rmiUrl();
-			System.out.println("Partage de l'affichage");
 			RmiTools.shareObject(afficheurServiceWrapper, afficheurServicermiURL);
 			
-			
-			//afficheurFactory.createOnLocalPC(affichageOptions, meteoServiceRemote);
 			
 			return afficheurServicermiURL; // Retourner le RMI-ID pour une connection distante sur le serveur d'affichage
 			}
@@ -101,14 +88,6 @@ public class AfficheurManager implements RemoteAfficheurCreator_I
 
 	private AfficheurService_I createAfficheurService(AffichageOptions affichageOptions, final MeteoServiceWrapper_I meteoServiceRemote) throws RemoteException
 		{
-		//AfficheurService_I afficheurService = new AfficheurServiceWrapper()
-		try {
-			meteoServiceRemote.connect();
-		} catch (MeteoServiceException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
 		
 		return afficheurFactory.createOnCentralPC(affichageOptions, meteoServiceRemote);
 		}

@@ -1,5 +1,7 @@
 package ch.hearc.meteo.imp.use.remote.pclocal;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
@@ -94,14 +96,25 @@ public class PCLocal implements PC_I {
 	{
 		meteoServiceFactory = new MeteoServiceFactory();
 		MeteoPortDetectionService service = new MeteoPortDetectionService();
-		System.out.println(service.findListPortSerie());
-		// addMeteoService("COM3");
+		//System.out.println(service.findListPortSerie());
+		 addMeteoService("COM3");
 		
 	}
 
 	public void addMeteoService(String comPort) throws MeteoServiceException, RemoteException, NotBoundException {
 		MeteoService_I meteoService = meteoServiceFactory.create(comPort);
 		//meteoService.connect();
+		String currentIp = "0.0.0.0";
+		//Création du titre de la fenêtre
+		try {
+			currentIp = InetAddress.getLocalHost().toString();
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+		AffichageOptions affichageOptions = new AffichageOptions(10, currentIp + " - " + comPort);
 		
 		meteoServices.add(meteoService);
 		meteoService.setMeteoServiceOptions(meteoServiceOptions);
@@ -112,12 +125,11 @@ public class PCLocal implements PC_I {
 		RmiURL meteoServiceRmiURL = new RmiURL(IdTools.createID(MeteoService_I.class.getName()));
 		
 		RmiTools.shareObject(meteoServiceWrapper, meteoServiceRmiURL);
-		System.out.println("Partage du service meteo");
 		RmiURL remoteAfficheurServiceRmiURL  = afficheurManager.createRemoteAfficheurService(affichageOptions, meteoServiceRmiURL);
 		
 		final AfficheurServiceWrapper_I afficheurServiceWrapper = (AfficheurServiceWrapper_I)RmiTools.connectionRemoteObjectBloquant(remoteAfficheurServiceRmiURL);
+
 		
-		System.out.println("Creation de l'affichage en local");
 		final AfficheurService_I afficheurServiceLocal = afficheurFactory.createOnLocalPC(affichageOptions, meteoServiceWrapper);
 		
 		
@@ -142,7 +154,6 @@ public class PCLocal implements PC_I {
 					afficheurServiceWrapper.printPression(event);
 					afficheurServiceLocal.printPression(event);
 				} catch (RemoteException e) {
-					//TODO
 					System.out.println("Erreur mise a jour interface");
 				}
 				

@@ -29,7 +29,6 @@ public class PCCentral implements PC_I {
 		try {
 			server();
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -40,21 +39,6 @@ public class PCCentral implements PC_I {
 
 	private void server() throws RemoteException {
 		this.remoteAfficheurCreator = AfficheurManager.getInstance();
-		//this.rmiURLafficheurManager = new RmiURL(AfficheurManager.RMI_ID,	RmiTools.PORT_RMI_DEFAUT);
-		//RmiTools.shareObject(this.remoteAfficheurCreator, this.rmiURLafficheurManager);
-
-		/*while (true) {
-
-			System.out.println("ATTENTE");
-
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} // disons
-		}*/
-
 	}
 
 	/*------------------------------------------------------------------*\

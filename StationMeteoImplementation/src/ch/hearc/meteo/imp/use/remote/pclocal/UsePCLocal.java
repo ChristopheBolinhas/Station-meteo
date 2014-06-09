@@ -47,7 +47,7 @@ public class UsePCLocal
 		String portCom = "COM1";
 		AffichageOptions affichageOptions = new AffichageOptions(10, "Test");
 		
-		RmiURL rmiURLafficheurManager = new RmiURL(AfficheurManager.RMI_ID, RmiTools.getLocalHost(), RmiTools.PORT_RMI_DEFAUT);
+		RmiURL rmiURLafficheurManager = new RmiURL(AfficheurManager.RMI_ID, ip, RmiTools.PORT_RMI_DEFAUT);
 
 		int n = 2000;
 		MeteoServiceOptions meteoServiceOptions = new MeteoServiceOptions(n, n, n);

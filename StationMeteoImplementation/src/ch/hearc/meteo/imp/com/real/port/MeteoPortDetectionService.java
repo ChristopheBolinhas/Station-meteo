@@ -26,6 +26,7 @@ public class MeteoPortDetectionService implements MeteoPortDetectionService_I{
 		
 		@SuppressWarnings("unchecked")
 		Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
+		System.out.println("wut ?");
 		while(portEnum.hasMoreElements())
 		{
 			CommPortIdentifier portIdentifier = portEnum.nextElement();
@@ -33,6 +34,7 @@ public class MeteoPortDetectionService implements MeteoPortDetectionService_I{
 			//{
 			//case CommPortIdentifier.PORT_SERIAL:
 				listPortSerie.add(portIdentifier.getName());
+			
 				//break;
 			//}
 		}
