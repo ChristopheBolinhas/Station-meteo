@@ -90,15 +90,25 @@ public abstract class MeteoService_A implements MeteoService_I ,MeteoServiceCall
 
 				this.meteoServiceOptions = meteoServiceOptions;
 				isRunning = true;
+<<<<<<< HEAD
 				try {
 					startHardware();
 				} catch (MeteoServiceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+=======
+			
+>>>>>>> 1b90c84e1053506c9035b2f163c23a5705523d25
 				questionneur = new Questionneur(this);
 				threadQuestionnaire = new Thread(questionneur);
 				threadQuestionnaire.start();
+				try {
+					startHardware();
+				} catch (MeteoServiceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				}
 			else
 				{

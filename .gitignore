@@ -213,3 +213,5 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+StationMeteoImplementation/src/ch/hearc/meteo/imp/com/logique/MeteoService_A.java
+StationMeteoImplementation/src/ch/hearc/meteo/imp/com/real/port/MeteoPortDetectionService.java

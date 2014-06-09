@@ -2,7 +2,10 @@ package ch.hearc.meteo.imp.com.real.port;
 
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -13,6 +16,7 @@ import java.util.Scanner;
 import ch.hearc.meteo.imp.com.real.com.ComOption;
 import ch.hearc.meteo.imp.com.real.com.trame.TrameDecoder;
 import ch.hearc.meteo.imp.com.real.com.trame.TrameEncoder;
+import ch.hearc.meteo.spec.com.meteo.exception.MeteoServiceException;
 import ch.hearc.meteo.spec.com.port.MeteoPortDetectionService_I;
 
 
@@ -30,6 +34,7 @@ public class MeteoPortDetectionService implements MeteoPortDetectionService_I{
 		while(portEnum.hasMoreElements())
 		{
 			CommPortIdentifier portIdentifier = portEnum.nextElement();
+<<<<<<< HEAD
 			//switch(portIdentifier.getPortType())
 			//{
 			//case CommPortIdentifier.PORT_SERIAL:
@@ -37,6 +42,10 @@ public class MeteoPortDetectionService implements MeteoPortDetectionService_I{
 			
 				//break;
 			//}
+=======
+			listPortSerie.add(portIdentifier.getName());
+			
+>>>>>>> 1b90c84e1053506c9035b2f163c23a5705523d25
 		}
 		
 		return listPortSerie;
@@ -46,39 +55,71 @@ public class MeteoPortDetectionService implements MeteoPortDetectionService_I{
 	public boolean isStationMeteoAvailable(String portName, long timeoutMS){
 
 		SerialPort serialPort = null;
-		InputStream reader = null;
+		reader = null;
 		OutputStream writer = null;
 		
 		try{
 			CommPortIdentifier portId = CommPortIdentifier.getPortIdentifier(portName);
 			serialPort = (SerialPort)portId.open(portName, 10000);
 			ComOption comOption = new ComOption();
-			serialPort.setSerialPortParams(comOption .getSpeed(),comOption.getDataBit(),comOption.getStopBit(),comOption.getParity());
+			serialPort.setSerialPortParams(comOption.getSpeed(),comOption.getDataBit(),comOption.getStopBit(),comOption.getParity());
 			serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
 			
 			//Initialise le reader et writer
 			reader = serialPort.getInputStream();
 			writer = serialPort.getOutputStream();
 	
+			serialPort.addEventListener(new SerialPortEventListener() {
+				
+				@Override
+				public void serialEvent(SerialPortEvent e) {
+					switch(e.getEventType())
+					{
+					case SerialPortEvent.DATA_AVAILABLE:
+						checkPacketRecu();
+						break;
+					}
+				}
+
+			});
+			
 			serialPort.notifyOnDataAvailable(true);
+			
+			valueTest = 0;
 			
 			//Envoie et attends
 			writer.write(TrameEncoder.coder("010200"));
+			
 			Thread.sleep(timeoutMS);
 			
-			//Essaye de lire
-			@SuppressWarnings("resource")
-			Scanner s = new Scanner(reader).useDelimiter("\\A");
-		    String trame = s.hasNext() ? s.next() : "";
+			serialPort.removeEventListener();
+			reader.close();
+			writer.close();
+			serialPort.close();
 			
-			float value = TrameDecoder.valeur(trame);
-			if(!Float.isNaN(value))
+			System.out.println(valueTest);
+			
+			if(valueTest != 0){
 				return true;
+			}
 			else
 				return false;
 		}
 		catch(Exception e){
 			return false;	
+		}
+	}
+	
+	private void checkPacketRecu() {
+		//Essaye de lire
+		@SuppressWarnings("resource")
+		Scanner s = new Scanner(reader).useDelimiter("\\A");
+	    String trame = s.hasNext() ? s.next() : "";
+		
+		try {
+			valueTest = TrameDecoder.valeur(trame);
+		} catch (MeteoServiceException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -104,12 +145,13 @@ public class MeteoPortDetectionService implements MeteoPortDetectionService_I{
 		for(String portName:listPort)
 		{
 			//Si la station est disponible dans les 250ms
-			if(isStationMeteoAvailable(portName, 250))
+			if(isStationMeteoAvailable(portName, 500))
 				listStationMeteo.add(portName);
 		}
 		
 		return listStationMeteo;
 	}
 	
-
+	float valueTest;
+	InputStream reader;
 }
